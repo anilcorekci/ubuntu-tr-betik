@@ -1,0 +1,133 @@
+
+#Ek Bileşenler #simgeler/softwarecentre.svg#Gerekli media çözücüleri ve ilave paketler için harici kaynaklar ve uygulamalar..
+
+Sıkıştırma araçları (rar, unrar, 7zip, unp, unace):rar unrar p7zip-full p7zip-rar unace unp
+Güncel dil deposu:ubuntu-langpack/ppa=language-pack-tr
+Microsoft yazı tipleri:microsoft_font
+Kaynak listesi (sources.list) düzenlemesi:sourceslist_edit
+Gstreamer, Xine ve DVD çözücüleri:gstreamer0.10-ffmpeg gstreamer0.10-pitfdll gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse libdvdnav4 libdvdread4 libdvdcss2 libxine1-ffmpeg ffmpeg
+Adobe Flaş Player:flash_player
+Getdeb deposu:getdeb_apps
+Alsa Derleme ( ppa kaynağı ):ubuntu-audio-dev/alsa-daily=alsa-hda-dkms
+Sun Java 7:sun_java
+Kısıtlı çözücüler (medibuntu):medibuntu_org
+Playdeb deposu:playdeb_apps
+
+#Masaüstü Araçları#simgeler/user-desktop.png#Masaüstünü özelleştirmeyi sağlayan uygulamalar ve araçlar..
+
+Dockbarx:dockbar-main/ppa=dockbarx
+Conky:conky-all
+Docky:docky-core/ppa=docky
+Wbar:wbar
+Gnome DO:gnome-do
+SimDock:simdock
+Screenlets:screenlets
+AWN:avant-window-navigator
+Google Gadgets:google-gadgets-gtk
+Kupfer:kupfer-team/ppa=kupfer
+Cairo-dock:cairo-dock-team/ppa=cairo-dock 
+
+#Sistem Özelleştirme #simgeler/preferences-system.svg#Kullanıcı tercihlerini kolayca özelleştirmenizi sağlayan uygulamalar..
+
+Unity Özelleştirme ( MyUnity  ):myunity/ppa=myunity
+Gnome Shell Özelleştirme (gnome-tweak-tool ):gnome-tweak-tool
+Unity Özelleştirme (Unsettings):diesch/testing=unsettings
+Ubuntu Tweak :tualatrix/ppa=ubuntu-tweak
+
+#Web Tarayıcılar#simgeler/web.svg#Web'te gezmek için beğenilen tarayıcılar..
+
+Midori (WebkitTabanlı):epiphany-browser
+Links (UçbirimTabanlı):links
+Opera:opera_deposu
+Epiphany (WebkitTabanlı):epiphany-browser
+Lynx (UçbirimTabanlı):lynx
+Chromium:chromium-browser chromium-browser-l10n
+MozillaSeaMonkey:midori
+
+#Anlık İleti #simgeler/email_and_chat.svg#Sıkça kullanılan ileti kanalları için sevilen uygulamalar..
+
+Amsn:amsn
+Amsn Geliştirme Deposu:amsn-daily/ppa=amsn
+Kopete (KDETabanlı) :kopete
+Konversation(KDETabanlı):konversation
+Pidgin:pidgin
+Xchat:xchat
+Skype:skype
+KMess (KDETabanlı) :kmess
+Emesene:emesene
+Finch (UçbirimTabanlı) :finch
+
+#Grafik, Ses, Video#simgeler/photos.svg#Resim ve video düzenlemek için sevilen uygulamalar..
+
+Shutter:shutter
+Krita (KDE Tabanlı):krita
+Digikam (KDE Tabanlı):digikam
+Gthumb:gthumb
+Gimp:gimp
+Openshot:openshot
+Audacity:audacity
+Ardour:ardour
+Avidemux:avidemux
+KDEnlive (KDE Tabanlı):kdenlive
+Inkscape:inkscape
+Blender:blender
+
+#Müzik Oynatıcılar#simgeler/music.svg#Sevilen müzik arşivi ve ekstra özellilleri sunan , müzik oynatıcılar..
+
+Open Cubic Player (Uçbirim Tabanlı):opencubicplayer
+Exaile:exaile
+Audacious:audacious
+DeadBeeF:alexey-smirnov/deadbeef=deadbeef
+Amarok (KDE Tabanlı):amarok
+Banshee:banshee
+Aqualung:aqualung
+Qmmp:qmmp
+Clementine:me-davidsansome/clementine=clementine
+MP3Blaster (Uçbirim Tabanlı):mp3blaster
+MOC Player (Uçbirim Tabanlı):moc
+Listen:listen
+CMus (Uçbirim Tabanlı):cmuscmus
+
+#Video Oynatıcılar#simgeler/applications-multimedia.svg#En beğenilen çoklu ortam oynatıcıları..
+
+SMPlayer:smplayer
+VLC:vlc
+MPlayer:mplayer
+Kaffeine(KDETabanlı):kaffeine
+GNOMEMPlayer:gnome-mplayer
+
+#İndirme Araçları#simgeler/text-x-install.svg#Bir çok ortam için çeşitli indirme uygulamaları..
+
+Kget (KDE Tabanlı):kget
+KTorrent (KDE Tabanlı):ktorrent
+Gwget:gwget
+Multiget:multiget
+Deluge:deluge
+Slimrat:slimrat
+Fatrat:fatrat
+Aria2 (Uçbirim Tabanlı):aria2
+rTorrent (Uçbirim Tabanlı):rtorrent
+qBittorrent:hydr0g3n/ppa=qbittorrent
+git, subversion, bzr:git-core subversion bzr
+Filezilla:filezilla
+JDownloader:jd-team/jdownloader=jdownloader
+Uget:uget
+
+#Diğer Uygulamalar#simgeler/applications-other.svg#Kategorilerin dışında kalan diğer sevilen uygulamalar.
+
+Miro:miro
+Gnomebaker:gnomebaker
+Qalculate:qalculate-gtk
+Gnote:gnote
+Nanny - Ebeveyn Denetim Uygulaması:nanny/ppa=nanny
+KeepassX:keepassx
+Mozilla Thunderbird:thunderbird thunderbird-locale-tr
+Ailurus:ailurus/ppa=ailurus
+KMail (KDE Tabanlı):kmail
+Claws Mail:claws-mail
+Easytag:easytag
+Aptitude:aptitude
+Yazılım derleme araçları:build-essential checkinstall
+Guake:guake
+Compiz yönetim araçları:compizconfig-settings-manager fusion-icon
+K3B (KDE Tabanlı):k3b

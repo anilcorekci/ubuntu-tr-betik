@@ -1,0 +1,89 @@
+#!/bin/bash
+#vim:ts=4:sw=4
+kurulacak_listesi=()
+secilmisler=()
+
+########################################################################################
+ 
+
+zenity_oku(){
+
+    declare -a sirala=("${!1}")
+    #array'daki verileri alfabetik olarak sırala XD bu da varmış ya yok artık ` .) 
+    readarray -t  birinci_girdi < <(for a in "${sirala[@]}"; do echo "$a"; done | sort)
+
+    local i=-1
+    local paket      
+    local items=()
+        
+    for x in "${birinci_girdi[@]}"; do 
+        ((i++)) 
+        xinfo="`echo "${x%%:}"|cut -d ":" -f2`"
+        KEY="`echo "${x%%:*}"|cut -d "." -f1`"
+        items+=(FALSE $i "$KEY" "$xinfo")
+    done
+
+    kategori=$(echo "$2"|cut -d "#" -f2)
+    simge=$(echo "$2"|cut -d "#" -f3)
+    aciklama=$(echo "$2"|cut -d "#" -f4)
+
+    zen_sama=`zenity --title="Ubuntu Tr Betik"  --width=450 --height=390 \
+         --window-icon="$PWD/$simge" \
+         --text="<big>$kategori listesinden kurmak istediklerinizi seçin.</big>
+$aciklama\n  
+<big><u>Bilgi:</u></big>  Eğer herhangi bir uygulama kurmak istemiyorsanız,\
+<big>İptal</big>' a basarak bu aşamayı atlayın.."  \
+         --list --column " "  --column ""  --column="# Açıklamalar " --column "Uygulamalar"  --hide-column="2"     \
+         --separator "\n"  --checklist  "${items[@]}"  `
+ 
+    for x in $zen_sama
+    do
+        paket="${birinci_girdi["$x"]##*:}"    
+        secilmisler+=("${birinci_girdi["$x"]%%:*}")
+        kurulacak_listesi+=("$paket")
+    done
+ 
+}
+
+bilgi=()
+i=-1
+while read line
+do
+
+    if [  $(echo $line|grep "#" -c)  = "1" ] ;then
+        bilgi+=("$line")
+        [[ ! -z $step ]] && zenity_oku  step[@]  "${bilgi[i]}"
+        ((i++))
+        unset step
+    elif [ $(echo $line|grep  ":" -c)  = "1"  ] ; then
+        # % öncesi : #sonrası                
+        step+=("${line%%:*}":"${line##*:}")
+    fi
+done <  /tmp/kurulacaklar
+
+zenity_oku  step[@]  "${bilgi[i]}" 
+#sözleşme onayını kontrol et..
+
+if [ ! -f  "$PWD/GPL/.onay" ];then 
+    zenity --text-info --filename="./GPL/zenity" --title="Ubuntu Tr Betik"
+    if [ "$?" = "0" ];then
+        echo "onaylandı" > "$PWD/GPL/.onay"
+    else
+        zenity --info --text="Sözleşme onaylanmadı çıkılıyor.."        
+        exit 0
+    fi    
+fi    
+if [[ -z "${kurulacak_listesi[@]}" ]]; then
+    echo "Liste boş,seçim yapılmamış..."
+    exit 0
+fi
+
+echo "Kurulacaklar için seçilmişler: ${secilmisler[@]}"
+echo -e "######################################################"
+echo -e "Kurulacak olan paketler\n:"
+echo "${kurulacak_listesi[@]}"
+../../bin/ubuntu-tr-betik "${kurulacak_listesi[@]}"
+
+#xterm ile yeni bir uçbirim aç
+#xterm -T "Ubuntu Tr Betik Kurulum"  \
+#-e "../../bin/ubuntu-tr-betik" "${kurulacak_listesi[@]}"

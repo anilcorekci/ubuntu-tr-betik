@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Type=Application
+Name=ubuntu-tr-betik 
+Name[tr]=ubuntu-tr-betik
+Comment=Sisteminiz için sevilen paketleri hızlıca kurun ve yeni depolar ekleyin
+Comment[tr]=Sisteminiz için sevilen paketleri hızlıca kurun ve yeni depolar ekleyin
+Exec=ubuntu-tr-betik
+Icon=/usr/share/ubuntu-tr-betik/logo.png
+Categories=Settings;DesktopSettings;GTK;

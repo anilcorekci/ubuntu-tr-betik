@@ -1,0 +1,454 @@
+#!/bin/bash
+# vim: ts=4:sw=4
+# TR: Betik Ubuntu sürümünü kontrol ediyor; 10.XX'den önceki sürümler desteklenmiyor.
+# EN: Checking Ubuntu release. No support for releases that before 10.xx
+
+# DEBUG_MODE mode geliştiriciler için adımlardaki hataları ya da işlemleri daha rahat yakalayabilmek için
+# kullanılan bir değişkendir. 0 ya da 1 değerlerinden birisini alabilir. Eğer 1 ise script DEBUG_MODE'da 
+# çalışır ve daha detaylı loglar üretir. Aksi halde salt son kullanıcıya yönelik çıktılar üretilir...
+DEBUG_MODE=1
+surum=$(lsb_release -sc)
+kurulu_paketler=()
+kurulacak_listesi=()
+
+logfile="/tmp/ubuntu-tr-betik.log"
+kurulumlog="/tmp/ubuntu-tr-betik-kurulum.log"
+
+for x in `dpkg --get-selections|sed -e "s/[install]*$//g" -e  "s/..*[de]$//g"`
+do
+    kurulu_paketler+=("$x")
+done
+
+kurulularda_mi(){
+for q in ${kurulu_paketler[@]}
+do    
+    if [ "$*" = "$q" ];then
+        return 0
+    fi
+done
+return 1
+}                            
+
+
+# gönderilen argüman boşluk içeriyorsa birden fazla paket
+# tek tek kontrol et aralarında biri bile kurulmamışsa kurulmamış say 
+#tek bir paketse duruma göre işte
+kontrol_kurulumu(){
+if [[ "$*" =~ " " ]];then
+    local x ;  local n
+    n=0
+    neler_var=()
+    
+    for x in $* ; do neler_var+=($x) ;done
+    
+    for x in "${neler_var[@]}" 
+    do
+        kurulularda_mi "$x"
+        [[ "$?" = "0" ]] && unset neler_var[n]
+        ((n++))
+    done
+    [[ ! -z "$neler_var" ]] && return 1
+    return 0         
+    
+else
+    kurulularda_mi "$*" 
+    [[ "$?" = "0" ]] && return 0
+fi    
+return 1
+}            
+# Betiğe yönetici hakları verilmiş mi ?
+if [[ $UID -ne 0 ]] # betiği çalıştıran kullanıcı id'si root (0) değilse...
+then   #böyle güzel yahu hata neyse çıktıyla gönder ya da hata durumu söyle
+ #           # düzeltmenin yolunu arayalım olmadı döneriz düzenlemene
+    gksu  ubuntu-tr-betik
+    [[ "$?" -gt "0" ]] && zenity --error --title="Ubuntu Tr Betik" --text="İşlem iptal edildi çıkılıyor.."        
+    exit 1       
+fi    
+if [ $(lsb_release -sd|cut -d  " " -f2 |cut -d "." -f1 )  -lt "10" ] ; then
+    echo "Ubuntu 10.04 ten önceki sürümler desteklenmemektedir.."
+    exit    
+fi
+
+[ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: Mevcut Sürüm: $(lsb_release -sd)\e[00m";
+# Kilit uygulmalarını kontrol et
+for kilit in synaptic update-manager software-center apt-get dpkg aptitude
+do
+    if ps -U root -u root u | grep ${kilit} | grep -v grep > /dev/null ;then 
+        echo -e "Hata2: Betiğin çalışabilmesi için lütfen  '${kilit}' uygulamasını kapatın.." 
+        [ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: APT'yi kilitleyen uygulama: $kilit\e[00m"
+        exit 1
+    fi
+done
+
+
+
+# Bağlantıya bakalım
+wget -t 3 -T 10 www.google.com -O /tmp/baglantisina &>/dev/null           
+if [ ! -s /tmp/baglantisina ] ; then
+    echo -e "Hata4: İnternet erişiminiz algılanamadı. \nBetiğin işlemleri uygulayabilmesi için internet bağlantısı gereklidir." 
+    exit 1 
+else
+    rm -rf /tmp/baglantisina
+    echo -e "İnternet erişiminiz var.." 
+fi
+
+#Paket bilgilerinin uygulayacağı fonksiyonlar@@@
+sourceslist_edit(){
+    if [ "$*" == "0" ];then
+        [[ -f  "/etc/apt/sources.list_ubuntu-tr-betik_yedekledi" ]] &&  return 0
+        return 1
+    fi                
+    echo "Depo düzenlemesi algılandı komutlar yürütülüyor.."
+    sudo cp -n /etc/apt/sources.{list,list_ubuntu-tr-betik_yedekledi}
+    sudo sed -i 's/tr.archive/nl.archive/g' /etc/apt/sources.list
+    sudo sed -i 's/deb-src/#deb-src/g' /etc/apt/sources.list
+    guncelle  
+}
+
+ 
+sun_java(){
+    sourcfile=$(echo /etc/apt/sources.list.d/wepud8team-java)
+    if [ "$*" = "0" ];then
+        kontrol_kurulumu "oracle-java7-installer"
+        [[ -f "$sourcfile" ]] && [[ "$?" = "0" ]] && return 0
+        return 1
+    fi        
+    sudo add-apt-repository -y ppa:webupd8team/java
+    guncelle
+    echo "check_certificate = off"|sudo tee -a /etc/wgetrc  
+    kurucu "oracle-java7-installer"
+}    
+getdeb() {
+
+    echo "deb http://archive.getdeb.net/ubuntu $surum-getdeb $*" > /etc/apt/sources.list.d/"getdeb$*".list
+    wget -O- http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add - 
+    guncelle
+
+}    
+getdeb_apps() {
+    if [ "$*" = "0" ];then
+        [[ -f "/etc/apt/sources.list.d/getdebapps.list" ]] && return 0
+        return 1
+    fi                
+    getdeb "apps"
+}
+
+playdeb_apps() {
+    if [ "$*" = "0" ];then
+        [[ -f "/etc/apt/sources.list.d/getdebgames.list" ]] && return 0
+        return 1
+    fi                
+    getdeb "games"
+}
+
+flash_player() {
+    if [ "$*" = "0" ];then
+        if [ i686 = `uname -m` ];then
+            kontrol_kurulumu "flashplugin-nonfree"
+            [[ "$?" = "0" ]] && return 0
+        else
+            [[ -f "/usr/lib/mozilla/plugins/libflashplayer.so" ]] && return 0
+        fi            
+        return 1
+    fi                
+    sudo apt-get -y purge adobe-flashplugin flashplugin-installer flashplugin-nonfree swfdec-mozilla mozilla-plugin-gnash flashblock libflashsupport
+    if [ i686 = `uname -m` ]; then
+        kurucu flashplugin-nonfree
+    else 
+        Linux_64_bit_flash="install_flash_player_11_linux.x86_64.tar.gz"
+        wget http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.238/${Linux_64_bit_flash}  -O /tmp/${Linux_64_bit_flash}
+        sudo rm -f /usr/lib/mozilla/plugins/*flash*
+                       
+        sudo rm -f ~/.mozilla/plugins/*flash*
+        sudo rm -f /usr/lib/firefox/plugins/*flash*
+                       
+        sudo rm -f /usr/lib/firefox-addons/plugins/*flash*
+        sudo rm -rf  /usr/lib/nspluginwrapper
+                       
+        tar xzf /tmp/${Linux_64_bit_flash}   --directory=/tmp
+        rm -rf  /tmp/${Linux_64_bit_flash}
+        sudo mv /tmp/libflashplayer.so /usr/lib/mozilla/plugins 
+    fi   
+}                         
+
+microsoft_font() {
+    if [ "$*" = "0" ];then
+        kontrol_kurulumu "ttf-mscorefonts-installer ttf-liberation"
+        [[ "$?" = "0" ]] && return 0
+        return 1
+    fi
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections 
+    kurucu "ttf-mscorefonts-installer ttf-liberation"
+}    
+medibuntu_org() {
+    codec="w64codecs" 
+    if [ i686 = `uname -m` ];then
+        codec="w32codecs"
+    fi  
+
+    if [ "$*" = "0" ];then
+        kontrol_kurulumu "$codec"
+        if [[ -f  "/etc/apt/sources.list.d/medibuntu"  &&  $? = 0 ]];then
+            return 0
+        fi            
+        return 1
+    fi  
+    echo "deb http://packages.medibuntu.org/ ${surum} free non-free" >/etc/apt/sources.list.d/medibuntu
+    sudo apt-key add "$(pwd)"/anahtarlar/medibuntu
+    guncelle
+    kurucu "$codec"
+}
+
+opera_deposu() {
+    if [ "$*" = "0" ];then       
+        kontrol_kurulumu "opera"
+        if [[ -f  "/etc/apt/sources.list.d/opera" &&  $? = 0  ]];then
+            return 0
+        fi            
+        return 1
+    fi  
+    echo 'deb http://deb.opera.com/opera/ stable non-free' | sudo tee   /etc/apt/sources.list.d/opera         
+    wget -O - http://deb.opera.com/archive.key | sudo apt-key add -
+    guncelle
+    kurucu opera 
+}
+function girdi() {
+    IFS="|"
+    paketler=`echo "$*" | tr -s  " "  "|"`
+    for x in $paketler
+    do  
+        echo $x
+        kurulacak_listesi+=("$x")
+    done      
+    clear
+} 
+
+
+#Depo ekleme işlemi bu şekilde olabilir sanki      
+function depo_kurucu() {
+    arg="$*"
+    depo="ppa:${arg%%=*}"    #işaretten öncesi
+    dpaket="${arg##*=}"   #sonrası
+ 
+    sudo add-apt-repository -y "$depo" 
+    guncelle 
+    kurucu "$dpaket"
+    sudo rm -rf  /etc/apt/sources.list.d/*.save
+}
+guncelle() {
+#Paket bilgisini güncelle
+sudo debconf-apt-progress --logfile="$kurulumlog" -- apt-get update
+
+}
+kurucu() {           
+
+echo -e  "\e[01;31m$* : paketi için kurulum başlatılıyor..\e[00m" 
+echo "$*:paketi için kurulum başlatılıyor.." >> "$kurulumlog"
+
+#yinede uğraştım ya bununla :P bana XD
+for x in seq 0 10 100; do sleep 0.2 ; echo -n "###############" ;done ; echo -e "\n"
+
+if [[ "$*" =~ " " ]];then
+ #Eh be geliştirici ikitane argüman koyamadık ya yanyana XD
+    for x in `echo "$*" |tr -s " " "|"` 
+    do
+        sudo debconf-apt-progress --logfile="$kurulumlog" -- apt-get -y install "$x"
+    done
+else
+    sudo debconf-apt-progress --logfile="$kurulumlog" -- apt-get -y install "$*"    
+fi
+    
+}
+function ana_kurulum() {    
+    > "$kurulumlog"
+    sudo sed -i "/^# deb .*partner/ s/^# //" /etc/apt/sources.list
+    guncelle 
+    girdi "$*"
+    
+    echo "################ ANA KURULUM ###############################"  
+     
+    for paket in "${kurulacak_listesi[@]}"
+    do
+    # / karakteri bulunanlar depo kurulumana işaret ediyor,
+    # _ karakteri ise fonksiyon çağırıyor
+    # ikiside değil evet bu bir paket adı  
+        if [[ "$paket" =~ "_" ]];then
+            $paket   
+        elif [[ "$paket" =~ "=" ]];then 
+            depo_kurucu "$paket"
+        else             
+            kurucu "$paket"
+        fi            
+    done  
+    echo "Uygulamayı kapatmak için enter'a bas..."
+    read x;
+    exit 0
+}
+ 
+#Kurulacaklar listesindeki paketler kurulumu , değil mi ?
+#eğer paket komutlarında " " 'a rast gelirse burdan anlıyor ki ,
+# bu birden fazla paketten söz ediyor ,
+# bu durumda  paketler  paket denen array'a ekleneyor.
+# Array düzgün bir ayıklama yapabilmek için n değişkeni kullanılıyor.
+# n değişkeni kaçıncı sıradaki liste öğesinin silineceğini belirlemek için
+#niye peki listeliyoruz ? eğer sed veya tr ile düzenlemeye silmeye kalkarsak:
+#paketler şöyle olsa ; firefox firefox-dil-tr elimizde -dil-tr kalır ki işin içinden çıkılmaz.
+#  eğer tek bir paketse step "ten siliniyor.. 
+#../../share/ubuntu-tr-betik dizininde bulunan kurulacaklar dosyayından alınan paket 
+#bilgileri paket deposuyla karşılaştırılıyor ve daha önce kurulmuş olan paketler 
+#yeni oluşturulan /tmp/kurulacak dosyasına yazılmıyor , python arayüzleri ise yeni oluşturulan bu dosya 
+#içindeki bilgileri bize gösteriyor..
+ 
+kontrol() {
+l=0
+for x in "${step[@]}" 
+do   
+    kategori="`echo "${bilgi[i]}"|cut -d "#" -f2`"
+    if [[ "${x##*:}" =~ "_"  ]];then
+     # fonksiyonlara 0 seçeneği standartını getirek 
+     # eğer uygulayacak işlemi kalmışsa return 1
+     # yok uygulanacak bir şey kalmamışsa return 0
+     # return 0'sa kurulacaklardan çıkar..
+        fonksiyon="${x##*:}"
+        ${x##*:}${FUNCTION_NAME} "0" 
+        if [ $? == 0 ];then
+            unset step[l]
+            echo -e "$fonksiyon fonksiyonu daha önce uygulanmış >\n   $kategori    listesinden çıkarılıyor.." >> "$logfile"
+            echo  "#$fonksiyon fonksiyonu daha önce uygulanmış >\n   $kategori    listesinden çıkarılıyor.."   ; sleep 0.1
+        fi
+    elif [[ "${x##*:}" =~ "/" ]];then
+        arg="${x##*:}" 
+        depo="ppa:${arg%%=*}"    #işaretten öncesi
+        dpaket="${arg##*=}"   #sonrası                
+        # depo eklenmiş ve pakette kurulmuşsa 
+        fil_=$(echo /etc/apt/sources.list.d/"${arg%%/*}"* )
+        if [[ -f  "$fil_" &&   $(dpkg -l|grep  "$dpaket" -c)  -gt 0  ]] ;then
+            unset step[l]
+            echo   "#$depo deposu eklenmiş $dpaket kurulmuş >\n   $kategori listesinden çıkarılıyor.." ; sleep 0.1
+            echo  -e "$depo deposu eklenmiş $dpaket kurulmuş >\n   $kategori listesinden çıkarılıyor..">> "$logfile"
+        #depo eklenmiş paket kurulmamışsa            
+        elif  [ -f /etc/apt/sources.list.d/"${arg%%/*}"*   ]; then
+            echo   "#$depo deposu eklenmiş  ancak $dpaket kurulmamış." ; sleep 0.1
+            echo -e "$depo deposu eklenmiş  ancak $dpaket kurulmamış.">> "$logfile"
+            unset step[l] 
+            step+=("${x%%:*}":"$dpaket")
+        fi                        
+    else
+        if [[ "${x##*:}" =~ " " ]]; then 
+            paket=()
+            for y in  ${x##*:} ; do paket+=("$y") ; done                                                    
+            n=0
+            for y in "${paket[@]}"
+            do
+               kontrol_kurulumu "$y"
+               if [ "$?" = "0" ];then
+                    unset paket[n] 
+                    echo  "#$y kurulmuş >\n   ${x%%:*} paketinden çıkarılıyor.."  ; sleep 0.1
+                    echo -e  "$y kurulmuş >\n   ${x%%:*} paketinden çıkarılıyor..">> "$logfile"
+                fi
+                ((n++))
+            done            
+            if [ ! -z "$paket"  ];then
+                unset step[l]
+                step+=("${x%%:*}":"`echo "${paket[@]}"|tr -s "\n" " "`")
+            else 
+                echo  "#${x%%:*} \n paketinde kurulum kalmamış > \n   $kategori listesinden çıkarılıyor.."  ; sleep 0.1 
+                echo -e "${x%%:*} paketinde kurulum kalmamış > \n   $kategori listesinden çıkarılıyor.."   >> "$logfile"
+                unset step[l]
+            fi            
+        elif [ ! -z "${x##*:}" ];then 
+            kontrol_kurulumu "${x##*:}"
+            if [ "$?" =  "0" ];then
+                echo   "#${x##*:} paketi kurulmuş > \n   $kategori listesinden çıkarılıyor.."   ; sleep 0.1
+                echo  -e "${x##*:} paketi kurulmuş > \n   $kategori listesinden çıkarılıyor.."   >> "$logfile"
+                unset step[l]     
+            fi                
+        fi    
+    fi        
+    ((l++))
+done
+echo   "#$kategori kurulacaklara ekleniyor.. "   ; sleep 0.1
+echo   "${bilgi[i]}  kurulacaklara ekleniyor.. "  >> "$logfile" 
+echo -e "\n${bilgi[i]}\n" >> /tmp/kurulacaklar
+for  n in "${step[@]}" ; do
+    echo "$n" >> /tmp/kurulacaklar
+done                
+}
+
+
+yeni_kurulacaklar(){
+bilgi=()
+i=-1
+> /tmp/kurulacaklar
+echo "#Paket Bilgileri Ekleniyor.."
+while read line 
+do 
+
+    if [[ "$line" =~ "#"  ]] ;then
+        bilgi+=("$line")
+        [[ ! -z "$step" ]] && kontrol            
+        ((i++))
+        unset step
+    elif [[ "$line" =~  ":"  ]] ; then
+        # % öncesi : #sonrası
+        # / veya _ değilse paket bilgisini ara ve ekle
+        # birden çok paket için yalnızca ilk belirtilen
+       if [[ "${line##*:}" =~ "/" ]] ; then
+            nn=$(echo "${line##*:}" |cut -d "=" -f2)
+        elif [[ "${line##*:}" =~ "_" ]] ;then
+            unset nn
+        else
+            nn=$(echo "${line##*:}" |cut -d " " -f1)
+        fi
+        if [ ! -z $nn ];then
+            xn=$(apt-cache search "(^$nn$)"|head -n 1|sed -e "s/^$nn - //g" -e "s/\\.//g"|tr -d "\n")
+            if [ ! -z "$xn" ];then
+            # paket bilgisini daha sonra /tmp üzerinden oluşturulan,  yeni kuralacaklardan ayırmak  
+            # için kullanılacak, ayraç   '|'  damgası olacaktır.
+                step+=("${line%%:*}|$xn":"${line##*:}")
+            else            
+                step+=("${line%%:*}":"${line##*:}")
+            fi                
+        else
+            step+=("${line%%:*}":"${line##*:}")
+        fi
+    fi
+ 
+
+done <  /usr/share/ubuntu-tr-betik/kurulacaklar 
+kontrol            
+}
+ 
+# Scriptler direk yorumlayıcı ismi ile çağrılıyor; FAT, NTFS vs. dosya sistemleri EXT dosya sistemi izinlerini desteklemiyor
+# Kullanıcının scirpti Windows, MAC vs gibi sistemlerde ortak bir alanda tutmuş olabileceği ya da bazı nedenlerde dolayı FAT
+# sistemde tutabileceği gerekçesi ile bu yönteme gidildi.
+arayuzu_goster(){
+cd /usr/share/ubuntu-tr-betik
+[ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: Dizin değiştirildi:  ../share/ubuntu-tr-betik\e[00m"
+
+yeni_kurulacaklar|zenity --progress --title="Ubuntu Tr Betik - Kurulmuş Paketler Çıkarılıyor"\
+                            --window-icon=" /usr/share/ubuntu-tr-betik/logo.png"  --pulsate --auto-close
+[[ $? != 0 ]] && exit 1
+
+if [ ! -z  "`dpkg -l|grep python3-gi`" ] ;then
+    [ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: Çalıştırılan: arayuzpython3.py\e[00m"    
+    python3 arayuzpython3.py        
+elif [ ! -z  "`dpkg -l|grep python-gi`"  ];then
+    [ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: Çalıştırılan: arayuzgtk3.py \e[00m"    
+    python arayuzgtk3.py           
+elif [ ! -z "`dpkg -l|grep python-gtk2`" ];then    
+    [ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: Çalıştırılan: arayuz.py\e[00m"    
+    python arayuz.py               
+else
+    [ $DEBUG_MODE -eq 1 ] && echo -e "\e[01;31m$LINENO: Çalıştırılan: ubuntu-tr-betik-zenity\e[00m"    
+    bash ubuntu-tr-betik-zenity    
+fi    
+}
+
+if [ -z "$*" ];then
+    > "$logfile"
+    arayuzu_goster
+else
+    ana_kurulum "$*"
+fi        
+exit 0
