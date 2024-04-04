@@ -89,8 +89,7 @@
                           <object class="GtkLabel" id="label5">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Kategori Seç</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Kategori Seç                                          </property>
                           </object>
                           <packing>
                             <property name="left-attach">0</property>
@@ -101,8 +100,7 @@
                           <object class="GtkLabel" id="label6">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Paket Hakkında Açıklama Ekle</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Paket Hakkında Açıklama Ekle                              </property>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -164,8 +162,7 @@
                           <object class="GtkLabel" id="label15">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Paket hakkında kurulum bilgisi ekle...</property>
-                            <property name="xalign">0.07999999821186065</property>
+                            <property name="label" translatable="yes">Paket hakkında kurulum bilgisi ekle...                                                  </property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -223,19 +220,44 @@
                       <object class="GtkBox" id="box14">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="spacing">14</property>
                         <child>
-                          <object class="GtkEntry" id="entry2">
+                          <object class="GtkBox">
                             <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="margin-left">20</property>
-                            <property name="margin-right">20</property>
-                            <property name="margin-top">30</property>
-                            <property name="margin-bottom">40</property>
-                            <property name="invisible-char">•</property>
+                            <property name="can-focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Kategori ismi                                         </property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry2">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="margin-left">20</property>
+                                <property name="margin-right">20</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">27</property>
+                                <property name="invisible-char">•</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -249,7 +271,7 @@
                               <object class="GtkLabel" id="label10">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">Kategiri için simge yolu ..</property>
+                                <property name="label" translatable="yes">Kategori için simge yolu ..                                               </property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -298,8 +320,7 @@
                           <object class="GtkLabel" id="label11">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Oluşturulan Kategori hakkında bir açıklama ekle..</property>
-                            <property name="xalign">0.09000000357627868</property>
+                            <property name="label" translatable="yes">Oluşturulan Kategori hakkında bir açıklama ekle..                                                                     </property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -585,10 +606,10 @@
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry3">
-                    <property name="width-request">220</property>
+                    <property name="width-request">190</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="margin-left">180</property>
+                    <property name="margin-left">160</property>
                     <property name="margin-right">5</property>
                     <property name="invisible-char">•</property>
                     <property name="primary-icon-stock">gtk-new</property>
@@ -616,227 +637,109 @@
                 <property name="can-focus">False</property>
                 <property name="spacing">22</property>
                 <child>
-                  <object class="GtkBox" id="box9">
+                  <object class="GtkBox" id="box16">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
-                    <property name="spacing">8</property>
                     <child>
-                      <object class="GtkBox" id="box10">
+                      <object class="GtkExpander" id="expander3">
                         <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="margin-left">10</property>
-                        <property name="margin-right">7</property>
-                        <property name="spacing">15</property>
+                        <property name="can-focus">True</property>
+                        <property name="border-width">4</property>
                         <child>
-                          <object class="GtkButton" id="button8">
-                            <property name="use-action-appearance">False</property>
+                          <object class="GtkBox" id="box19">
                             <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="receives-default">True</property>
-                            <property name="tooltip-text" translatable="yes">Seçili kategori öğesini yukarı taşı</property>
-                            <property name="relief">none</property>
-                            <signal name="clicked" handler="up_down_list" swapped="no"/>
+                            <property name="can-focus">False</property>
+                            <property name="margin-left">25</property>
+                            <property name="margin-right">6</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
                             <child>
-                              <object class="GtkBox" id="box11">
+                              <object class="GtkLabel" id="label14">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="spacing">3</property>
-                                <child>
-                                  <object class="GtkImage" id="image4">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="stock">gtk-go-up</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label8">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Yukarı</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="ypad">1</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Kategori hakkındaki açıklamalar:&lt;/b&gt;              </property>
+                                <property name="use-markup">True</property>
+                                <property name="single-line-mode">True</property>
                               </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">10</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry6">
+                                <property name="width-request">271</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="secondary-icon-stock">gtk-save</property>
+                                <signal name="activate" handler="kategori_duzenle" swapped="no"/>
+                                <signal name="icon-press" handler="kategori_duzenle" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label13">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Kategori için belirlenen simge yolu :&lt;/b&gt;       </property>
+                                <property name="use-markup">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">10</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry7">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="secondary-icon-stock">gtk-save</property>
+                                <signal name="activate" handler="kategori_duzenle" swapped="no"/>
+                                <signal name="icon-press" handler="kategori_duzenle" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">3</property>
+                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
-                        <child>
-                          <object class="GtkButton" id="button9">
-                            <property name="use-action-appearance">False</property>
+                        <child type="label">
+                          <object class="GtkLabel" id="label12">
                             <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="receives-default">True</property>
-                            <property name="tooltip-text" translatable="yes">Seçili kategori öğesini aşağı taşı</property>
-                            <property name="relief">none</property>
-                            <signal name="clicked" handler="up_down_list" object="label9" swapped="no"/>
-                            <child>
-                              <object class="GtkBox" id="box12">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="spacing">3</property>
-                                <child>
-                                  <object class="GtkImage" id="image5">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="stock">gtk-go-down</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label9">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Aşağı</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">&lt;b&gt;&lt;i&gt;Kategori bilgilerini düzenle&lt;/i&gt;&lt;/b&gt;</property>
+                            <property name="use-markup">True</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="padding">17</property>
                         <property name="pack-type">end</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box16">
+                      <object class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="width-request">270</property>
                         <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="orientation">vertical</property>
+                        <property name="can-focus">True</property>
+                        <property name="shadow-type">in</property>
                         <child>
-                          <object class="GtkScrolledWindow" id="scrolledwindow1">
-                            <property name="width-request">280</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="shadow-type">in</property>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="pack-type">end</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkExpander" id="expander3">
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="border-width">4</property>
-                            <child>
-                              <object class="GtkBox" id="box19">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="orientation">vertical</property>
-                                <property name="spacing">2</property>
-                                <child>
-                                  <object class="GtkLabel" id="label14">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Kategori hakkındaki açıklamalar..</property>
-                                    <property name="xalign">0.07999999821186065</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="entry6">
-                                    <property name="width-request">271</property>
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="secondary-icon-stock">gtk-save</property>
-                                    <signal name="activate" handler="kategori_duzenle" swapped="no"/>
-                                    <signal name="icon-press" handler="kategori_duzenle" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label13">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Kategori için belirlenen simge yolu .. </property>
-                                    <property name="xalign">0.07999999821186065</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="entry7">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="secondary-icon-stock">gtk-save</property>
-                                    <signal name="activate" handler="kategori_duzenle" swapped="no"/>
-                                    <signal name="icon-press" handler="kategori_duzenle" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                            <child type="label">
-                              <object class="GtkLabel" id="label12">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">Kategori bilgilerini düzenle</property>
-                                <attributes>
-                                  <attribute name="style" value="oblique"/>
-                                  <attribute name="weight" value="semibold"/>
-                                </attributes>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
+                          <placeholder/>
                         </child>
                       </object>
                       <packing>
