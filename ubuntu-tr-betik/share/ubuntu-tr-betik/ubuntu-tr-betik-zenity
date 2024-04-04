@@ -65,7 +65,7 @@ zenity_oku  step[@]  "${bilgi[i]}"
 #sözleşme onayını kontrol et..
 
 if [ ! -f  "$PWD/GPL/.onay" ];then 
-    zenity --text-info --filename="./GPL/zenity" --title="Ubuntu Tr Betik"
+    zenity --text-info --filename="./GPL/zenity" --title="Ubuntu Tr Betik" --width=460 --height=390
     if [ "$?" = "0" ];then
         echo "onaylandı" > "$PWD/GPL/.onay"
     else
