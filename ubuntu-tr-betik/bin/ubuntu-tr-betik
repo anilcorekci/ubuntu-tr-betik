@@ -246,7 +246,7 @@ echo -e  "\e[01;31m$* : paketi için kurulum başlatılıyor..\e[00m"
 echo "$*:paketi için kurulum başlatılıyor.." >> "$kurulumlog"
 
 #yinede uğraştım ya bununla :P bana XD
-for x in seq 0 10 100; do sleep 0.2 ; echo -n "###############" ;done ; echo -e "\n"
+for x in $(seq 0 10 100); do sleep 0.2 ; echo -n "###############" ;done ; echo -e "\n"
 
 if [[ "$*" =~ " " ]];then
  #Eh be geliştirici ikitane argüman koyamadık ya yanyana XD
