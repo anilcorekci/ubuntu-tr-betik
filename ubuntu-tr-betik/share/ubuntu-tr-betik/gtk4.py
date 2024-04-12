@@ -186,7 +186,7 @@ class sec(gtk.Assistant):
         model[path][2] = not model[path][2] 
         sec = (model[path][0],model[path][1]) 
         
-        if not "" in sec:  sec = ".".join(sec)
+        if not "" in sec:  sec = "|".join(sec)
         else:  sec = "".join(sec)                   
            
         if  model[path][2]:     self.eklenenler.append( liste[sec] )
